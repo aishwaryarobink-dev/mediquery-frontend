@@ -14,14 +14,11 @@ const sendMessage = async (text) => {
   if (!text.trim()) return
 
   const userMessage = { role: 'user', content: text }
-  setMessages((prev) => [...prev, userMessage])
 
-  // 👇 Add empty bot message (we'll fill it live)
-  let botMessage = { role: 'bot', content: '' }
-  setMessages((prev) => [...prev, botMessage])
+  setMessages((prev) => [...prev, userMessage, { role: 'bot', content: '' }])
 
   try {
-    const response = await fetch('https://mediquery-backend-wb9o.onrender.com/chat', {
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -32,47 +29,42 @@ const sendMessage = async (text) => {
     const reader = response.body.getReader()
     const decoder = new TextDecoder()
 
-    let done = false
+    let botText = ''
 
-    while (!done) {
-      const { value, done: doneReading } = await reader.read()
-      done = doneReading
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
 
-      const chunk = decoder.decode(value || new Uint8Array())
+      const chunk = decoder.decode(value)
       const lines = chunk.split('\n')
 
       for (let line of lines) {
         if (line.startsWith('data: ')) {
           const data = line.replace('data: ', '').trim()
 
-          if (data === '[DONE]') break
+          if (data === '[DONE]') return
 
           try {
             const parsed = JSON.parse(data)
 
             if (parsed.text) {
-              botMessage.content += parsed.text
+              botText += parsed.text
 
-              // 👇 Update last message live
               setMessages((prev) => {
                 const updated = [...prev]
-                updated[updated.length - 1] = { ...botMessage }
+                updated[updated.length - 1] = {
+                  role: 'bot',
+                  content: botText,
+                }
                 return updated
               })
             }
-          } catch (err) {
-            console.error('Parse error:', err)
-          }
+          } catch {}
         }
       }
     }
   } catch (err) {
     console.error(err)
-
-    setMessages((prev) => [
-      ...prev,
-      { role: 'bot', content: '⚠️ Error connecting to server' },
-    ])
   }
 }
 
@@ -90,7 +82,7 @@ const sendMessage = async (text) => {
           <div className="chatArea">
             {messages.map((msg, index) => (
               <div key={index} className={`message ${msg.role}`}>
-                {msg.text}
+                {msg.content}
               </div>
             ))}
 
