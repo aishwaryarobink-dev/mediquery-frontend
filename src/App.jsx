@@ -9,7 +9,7 @@ import ChatInput from './components/ChatInput'
 function App() {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
-  const API_URL = import.meta.env.VITE_API_URL || 'https://mediquery-backend-wb9o.onrender.com/api/chat'
+  const API_URL = 'https://mediquery-backend-wb9o.onrender.com/api/chat'
 
   const sendMessage = async (text) => {
     if (!text.trim()) return
