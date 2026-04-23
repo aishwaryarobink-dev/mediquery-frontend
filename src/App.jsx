@@ -10,49 +10,70 @@ function App() {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/chat'
- const sendMessage = async (text) => {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      messages: [
-        {
-          role: "user",
-          content: text,
-        },
-      ],
-    }),
-  })
+const sendMessage = async (text) => {
+  if (!text.trim()) return
 
-  const reader = response.body.getReader()
-  const decoder = new TextDecoder()
+  const userMessage = { role: 'user', content: text }
+  setMessages((prev) => [...prev, userMessage])
 
-  let result = ""
+  // 👇 Add empty bot message (we'll fill it live)
+  let botMessage = { role: 'bot', content: '' }
+  setMessages((prev) => [...prev, botMessage])
 
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
+  try {
+    const response = await fetch('https://mediquery-backend-wb9o.onrender.com/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [...messages, userMessage],
+      }),
+    })
 
-    const chunk = decoder.decode(value)
-    const lines = chunk.split("\n")
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
 
-    for (let line of lines) {
-      if (line.startsWith("data: ")) {
-        const data = line.replace("data: ", "")
+    let done = false
 
-        if (data === "[DONE]") break
+    while (!done) {
+      const { value, done: doneReading } = await reader.read()
+      done = doneReading
 
-        try {
-          const parsed = JSON.parse(data)
-          result += parsed.text || ""
-        } catch {}
+      const chunk = decoder.decode(value || new Uint8Array())
+      const lines = chunk.split('\n')
+
+      for (let line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.replace('data: ', '').trim()
+
+          if (data === '[DONE]') break
+
+          try {
+            const parsed = JSON.parse(data)
+
+            if (parsed.text) {
+              botMessage.content += parsed.text
+
+              // 👇 Update last message live
+              setMessages((prev) => {
+                const updated = [...prev]
+                updated[updated.length - 1] = { ...botMessage }
+                return updated
+              })
+            }
+          } catch (err) {
+            console.error('Parse error:', err)
+          }
+        }
       }
     }
-  }
+  } catch (err) {
+    console.error(err)
 
-  return result
+    setMessages((prev) => [
+      ...prev,
+      { role: 'bot', content: '⚠️ Error connecting to server' },
+    ])
+  }
 }
 
   return (

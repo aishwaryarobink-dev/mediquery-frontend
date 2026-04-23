@@ -203,3 +203,6 @@
 .inputWrapper {
   backdrop-filter: blur(10px);
 }
+.message.bot {
+  white-space: pre-wrap;
+}
