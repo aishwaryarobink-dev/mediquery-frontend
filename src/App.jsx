@@ -9,42 +9,51 @@ import ChatInput from './components/ChatInput'
 function App() {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
-
-  const sendMessage = async (text) => {
-    if (!text.trim()) return
-
-    const userMessage = { role: 'user', text }
-    setMessages((prev) => [...prev, userMessage])
-    setLoading(true)
-
-    try {
-      const res = await fetch('https://mediquery-backend-wb9o.onrender.com/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/chat'
+ const sendMessage = async (text) => {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      messages: [
+        {
+          role: "user",
+          content: text,
         },
-        body: JSON.stringify({ message: text }),
-      })
+      ],
+    }),
+  })
 
-      const data = await res.json()
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
 
-      const botMessage = {
-        role: 'bot',
-        text: data.reply || 'No response from server',
+  let result = ""
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+
+    const chunk = decoder.decode(value)
+    const lines = chunk.split("\n")
+
+    for (let line of lines) {
+      if (line.startsWith("data: ")) {
+        const data = line.replace("data: ", "")
+
+        if (data === "[DONE]") break
+
+        try {
+          const parsed = JSON.parse(data)
+          result += parsed.text || ""
+        } catch {}
       }
-
-      setMessages((prev) => [...prev, botMessage])
-    } catch (error) {
-      console.error(error)
-
-      setMessages((prev) => [
-        ...prev,
-        { role: 'bot', text: '⚠️ Failed to connect to server' },
-      ])
     }
-
-    setLoading(false)
   }
+
+  return result
+}
 
   return (
     <div className="app">
