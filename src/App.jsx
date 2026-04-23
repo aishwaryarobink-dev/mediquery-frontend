@@ -19,6 +19,9 @@ function App() {
     setMessages((prev) => [...prev, userMessage, { role: 'bot', content: '' }])
     setLoading(true)
 
+    console.log('Sending to:', API_URL)
+    console.log('Messages:', [...messages, userMessage])
+
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
