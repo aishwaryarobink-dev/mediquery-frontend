@@ -11,6 +11,16 @@
 * ⚙️ Backend API: https://mediquery-backend-wb9o.onrender.com
 
 ---
+## ⚠️ Note on Backend Cold Starts
+
+> The backend is hosted on a free tier (Render), which may spin down after periods of inactivity.
+
+* 🕒 The **first request may take ~30–50 seconds** to respond
+* ⚡ Subsequent requests will be fast and real-time
+* 💡 This is a limitation of free hosting, not the application itself
+
+Please wait a moment if the app seems unresponsive on first use.
+---
 
 ## ✨ Features
 
