@@ -39,7 +39,6 @@ const chatRef = useRef(null)
 
     await handleStreamResponse(messagesToSend)
   }
-
   const handleStreamResponse = async (conversationMessages) => {
     try {
       const response = await fetch(API_URL, {
