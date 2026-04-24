@@ -13,7 +13,6 @@ function App() {
   const messagesRef = useRef([])
 const chatRef = useRef(null)
 
-  // Keep ref in sync with state
   useEffect(() => {
     messagesRef.current = messages
   }, [messages])
@@ -39,7 +38,6 @@ const chatRef = useRef(null)
 
     await handleStreamResponse(messagesToSend)
   }
-console.log("API:", API_URL)
   const handleStreamResponse = async (conversationMessages) => {
     try {
       const response = await fetch(API_URL, {
