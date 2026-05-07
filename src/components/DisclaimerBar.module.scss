@@ -1,0 +1,49 @@
+@use '../styles/tokens' as *;
+
+.bar {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-2;
+  padding: $sp-2 + 2px $sp-5;
+  background: rgba($warning, 0.05);
+  border-top: 1px solid rgba($warning, 0.12);
+  border-bottom: 1px solid rgba($warning, 0.12);
+  flex-shrink: 0;
+  animation: fadeIn 0.3s ease;
+
+  @include respond-to(sm) {
+    padding: $sp-2 $sp-4;
+  }
+}
+
+.icon {
+  color: rgba($warning, 0.6);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.text {
+  flex: 1;
+  font-size: $text-xs;
+  color: rgba($warning, 0.65);
+  line-height: 1.5;
+
+  strong {
+    font-weight: 600;
+    color: rgba($warning, 0.85);
+  }
+}
+
+.dismiss {
+  flex-shrink: 0;
+  font-size: $text-xs;
+  color: rgba($warning, 0.4);
+  padding: 2px 6px;
+  border-radius: $radius-sm;
+  transition: $transition-fast;
+
+  &:hover {
+    background: rgba($warning, 0.1);
+    color: rgba($warning, 0.8);
+  }
+}

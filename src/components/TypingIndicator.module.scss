@@ -1,0 +1,44 @@
+@use '../styles/tokens' as *;
+
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: $sp-3;
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  animation: fadeIn 0.2s ease;
+}
+
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: $radius-md;
+  background: $teal-700;
+  @include flex-center;
+  color: $white;
+  flex-shrink: 0;
+}
+
+.bubble {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: $navy-700;
+  border: 1px solid rgba($white, 0.07);
+  border-radius: $sp-1 $radius-lg $radius-lg $radius-lg;
+  padding: $sp-3 $sp-4;
+}
+
+.dot {
+  width: 7px; height: 7px;
+  border-radius: $radius-full;
+  background: $teal-500;
+  display: inline-block;
+  animation: typingDot 1.2s ease infinite;
+}
+
+.label {
+  font-size: $text-xs;
+  color: $slate-600;
+  font-style: italic;
+}

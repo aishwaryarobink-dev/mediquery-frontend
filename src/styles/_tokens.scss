@@ -1,0 +1,140 @@
+// ============================================================
+// MEDIQUERY DESIGN TOKENS
+// Shared base — same system used across all 3 portfolio projects
+// ============================================================
+
+// -- Color Palette ------------------------------------------
+$navy-900:   #0A1628;
+$navy-800:   #0D1B2A;
+$navy-700:   #112240;
+$navy-600:   #1a2f4e;
+$navy-500:   #233a5c;
+$navy-400:   #2d4a70;
+
+$teal-900:   #004D45;
+$teal-800:   #006B61;
+$teal-700:   #007A6E;
+$teal-600:   #009688;
+$teal-500:   #00B4A0;
+$teal-400:   #1ECDB9;
+$teal-300:   #4DDDD2;
+$teal-200:   #89EDE7;
+$teal-100:   #C4F7F4;
+$teal-50:    #E6FDFB;
+
+$slate-900:  #0F172A;
+$slate-800:  #1E293B;
+$slate-700:  #334155;
+$slate-600:  #475569;
+$slate-500:  #64748B;
+$slate-400:  #94A3B8;
+$slate-300:  #CBD5E1;
+$slate-200:  #E2E8F0;
+$slate-100:  #F1F5F9;
+$slate-50:   #F8FAFC;
+
+$white:      #FFFFFF;
+$success:    #10B981;
+$warning:    #F59E0B;
+$danger:     #EF4444;
+
+// -- Typography ---------------------------------------------
+$font-display: 'DM Serif Display', Georgia, serif;
+$font-body:    'DM Sans', system-ui, sans-serif;
+$font-mono:    'SF Mono', 'Fira Code', monospace;
+
+// Type scale
+$text-xs:   0.72rem;   // 11.5px
+$text-sm:   0.82rem;   // 13px
+$text-base: 0.92rem;   // 14.7px
+$text-md:   1rem;      // 16px
+$text-lg:   1.125rem;  // 18px
+$text-xl:   1.25rem;   // 20px
+$text-2xl:  1.5rem;    // 24px
+$text-3xl:  1.875rem;  // 30px
+
+// -- Spacing (8px grid) -------------------------------------
+$sp-1:  4px;
+$sp-2:  8px;
+$sp-3:  12px;
+$sp-4:  16px;
+$sp-5:  20px;
+$sp-6:  24px;
+$sp-8:  32px;
+$sp-10: 40px;
+$sp-12: 48px;
+$sp-16: 64px;
+
+// -- Radii --------------------------------------------------
+$radius-sm:  6px;
+$radius-md:  10px;
+$radius-lg:  14px;
+$radius-xl:  20px;
+$radius-full: 999px;
+
+// -- Shadows ------------------------------------------------
+$shadow-sm:  0 1px 3px rgba(10, 22, 40, 0.08), 0 1px 2px rgba(10, 22, 40, 0.04);
+$shadow-md:  0 4px 12px rgba(10, 22, 40, 0.10), 0 2px 4px rgba(10, 22, 40, 0.06);
+$shadow-lg:  0 10px 30px rgba(10, 22, 40, 0.14), 0 4px 8px rgba(10, 22, 40, 0.06);
+$shadow-teal: 0 4px 20px rgba(0, 180, 160, 0.25);
+
+// -- Transitions --------------------------------------------
+$transition-fast:   all 0.15s ease;
+$transition-base:   all 0.22s ease;
+$transition-slow:   all 0.35s ease;
+$transition-spring: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// -- Breakpoints --------------------------------------------
+$bp-xs:  480px;
+$bp-sm:  640px;
+$bp-md:  768px;
+$bp-lg:  1024px;
+$bp-xl:  1280px;
+
+// -- Mixins -------------------------------------------------
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin respond-to($bp) {
+  @if $bp == xs    { @media (max-width: $bp-xs)  { @content; } }
+  @if $bp == sm    { @media (max-width: $bp-sm)  { @content; } }
+  @if $bp == md    { @media (max-width: $bp-md)  { @content; } }
+  @if $bp == lg    { @media (max-width: $bp-lg)  { @content; } }
+  @if $bp == xl    { @media (max-width: $bp-xl)  { @content; } }
+}
+
+@mixin text-truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: $slate-300 transparent;
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $slate-300; border-radius: $radius-full; }
+  &::-webkit-scrollbar-thumb:hover { background: $slate-400; }
+}
+
+@mixin glass {
+  background: rgba($white, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba($white, 0.10);
+}

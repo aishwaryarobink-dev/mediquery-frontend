@@ -1,0 +1,126 @@
+@use '../styles/tokens' as *;
+
+.topbar {
+  @include flex-between;
+  padding: $sp-3 $sp-5;
+  border-bottom: 1px solid rgba($white, 0.07);
+  background: rgba($navy-800, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  flex-shrink: 0;
+  z-index: 10;
+  position: relative;
+
+  @include respond-to(sm) {
+    padding: $sp-3 $sp-4;
+  }
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: $sp-3;
+}
+
+.menuBtn {
+  width: 36px; height: 36px;
+  border-radius: $radius-md;
+  @include flex-center;
+  color: $slate-500;
+  transition: $transition-fast;
+
+  // only show on mobile — hide on desktop where sidebar is always visible
+  display: none;
+
+  @include respond-to(lg) {
+    display: flex;
+  }
+
+  &:hover {
+    background: rgba($white, 0.07);
+    color: $slate-300;
+  }
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: $sp-3;
+}
+
+.title {
+  font-family: $font-display;
+  font-size: $text-xl;
+  color: $white;
+  letter-spacing: -0.02em;
+  line-height: 1;
+
+  @include respond-to(sm) { font-size: $text-lg; }
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: rgba($teal-500, 0.1);
+  border: 1px solid rgba($teal-500, 0.2);
+  border-radius: $radius-full;
+  font-size: 10px;
+  font-weight: 600;
+  color: $teal-400;
+  letter-spacing: 0.02em;
+
+  @include respond-to(xs) { display: none; }
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: $sp-3;
+}
+
+.statusDot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  @include respond-to(sm) {
+    .statusText { display: none; }
+  }
+}
+
+.dot {
+  width: 7px; height: 7px;
+  border-radius: $radius-full;
+  background: $success;
+  box-shadow: 0 0 6px $success;
+  animation: pulse 2.5s ease infinite;
+}
+
+.statusText {
+  font-size: $text-xs;
+  color: $slate-600;
+}
+
+.clearBtn {
+  display: flex;
+  align-items: center;
+  gap: $sp-2;
+  padding: $sp-2 $sp-3;
+  border-radius: $radius-md;
+  background: rgba($danger, 0.08);
+  border: 1px solid rgba($danger, 0.15);
+  color: rgba($danger, 0.7);
+  font-size: $text-sm;
+  transition: $transition-fast;
+  animation: fadeIn 0.2s ease;
+
+  span { @include respond-to(xs) { display: none; } }
+
+  &:hover {
+    background: rgba($danger, 0.15);
+    border-color: rgba($danger, 0.3);
+    color: $danger;
+  }
+}

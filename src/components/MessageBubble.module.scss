@@ -1,0 +1,185 @@
+@use '../styles/tokens' as *;
+
+.wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-3;
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  animation: fadeIn 0.25s ease forwards;
+
+  &.user {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+
+  &.assistant {
+    flex-direction: row;
+  }
+}
+
+// ── Avatars ─────────────────────────────────────────────────
+.avatar {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.aiAvatarInner {
+  width: 32px; height: 32px;
+  border-radius: $radius-md;
+  background: $teal-700;
+  @include flex-center;
+  color: $white;
+}
+
+.avatarUser {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.userAvatarInner {
+  width: 32px; height: 32px;
+  border-radius: $radius-md;
+  background: $navy-500;
+  border: 1px solid rgba($white, 0.1);
+  @include flex-center;
+  color: $slate-300;
+}
+
+// ── Bubble Group ────────────────────────────────────────────
+.bubbleGroup {
+  @include flex-col;
+  gap: $sp-1 + 2px;
+  max-width: calc(100% - 48px);
+
+  .user & { align-items: flex-end; }
+  .assistant & { align-items: flex-start; }
+}
+
+// ── Bubbles ─────────────────────────────────────────────────
+.bubble {
+  border-radius: $radius-lg;
+  padding: $sp-4 $sp-5;
+  line-height: 1.65;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  position: relative;
+}
+
+.bubbleUser {
+  background: $teal-700;
+  border-radius: $radius-lg $radius-lg $sp-1 $radius-lg;
+  box-shadow: 0 2px 8px rgba($teal-900, 0.3);
+}
+
+.bubbleAssistant {
+  background: $navy-700;
+  border: 1px solid rgba($white, 0.07);
+  border-radius: $sp-1 $radius-lg $radius-lg $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+// ── Text Content ────────────────────────────────────────────
+.userText {
+  font-size: $text-base;
+  color: $white;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.aiContent {
+  font-size: $text-base;
+  color: $slate-200;
+}
+
+.paragraph {
+  margin-bottom: $sp-2;
+  line-height: 1.7;
+
+  &:last-child { margin-bottom: 0; }
+
+  strong { color: $white; font-weight: 600; }
+}
+
+.boldHeader {
+  font-size: $text-md;
+  font-weight: 600;
+  color: $white;
+  margin-bottom: $sp-2;
+  margin-top: $sp-3;
+
+  &:first-child { margin-top: 0; }
+}
+
+.list {
+  padding-left: $sp-5;
+  margin: $sp-2 0;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.listItem {
+  margin-bottom: $sp-1 + 2px;
+  color: $slate-200;
+  line-height: 1.6;
+
+  strong { color: $white; font-weight: 600; }
+
+  &::marker { color: $teal-500; }
+}
+
+// ── Typing cursor ────────────────────────────────────────────
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: $teal-400;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  animation: pulse 0.8s ease infinite;
+}
+
+// ── Meta / Actions ───────────────────────────────────────────
+.meta {
+  display: flex;
+  align-items: center;
+  gap: $sp-3;
+  padding: 0 $sp-1;
+}
+
+.metaUser { flex-direction: row-reverse; }
+.metaAssistant { flex-direction: row; }
+
+.time {
+  font-size: $text-xs;
+  color: $slate-600;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $sp-2;
+  opacity: 0;
+  transition: $transition-fast;
+
+  .bubbleGroup:hover & { opacity: 1; }
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: $radius-sm;
+  background: rgba($white, 0.05);
+  color: $slate-500;
+  font-size: $text-xs;
+  transition: $transition-fast;
+
+  &:hover {
+    background: rgba($white, 0.1);
+    color: $slate-300;
+  }
+}

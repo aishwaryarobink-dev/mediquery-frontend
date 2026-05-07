@@ -1,0 +1,128 @@
+@use './styles/tokens' as *;
+
+// ── Root layout ──────────────────────────────────────────────
+.root {
+  display: flex;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  background: $navy-900;
+  position: relative;
+}
+
+// ── Main content area ────────────────────────────────────────
+.main {
+  flex: 1;
+  @include flex-col;
+  overflow: hidden;
+  min-width: 0;
+
+  // On desktop push right of sidebar
+  margin-left: 280px;
+
+  @include respond-to(lg) {
+    margin-left: 0;
+  }
+}
+
+// ── Messages scrollable area ─────────────────────────────────
+.messagesArea {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  @include scrollbar-thin;
+  position: relative;
+
+  // Fade gradient at top to hint scrollability
+  &::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    display: block;
+    height: 24px;
+    background: linear-gradient(to bottom, $navy-900, transparent);
+    z-index: 2;
+    pointer-events: none;
+  }
+}
+
+.messagesList {
+  @include flex-col;
+  gap: $sp-6;
+  padding: $sp-6 $sp-8 $sp-4;
+  min-height: 100%;
+
+  @include respond-to(md) {
+    padding: $sp-5 $sp-5 $sp-4;
+    gap: $sp-5;
+  }
+
+  @include respond-to(sm) {
+    padding: $sp-4 $sp-4 $sp-3;
+    gap: $sp-4;
+  }
+}
+
+.anchor {
+  height: 1px;
+  flex-shrink: 0;
+}
+
+// ── Quick chips row ──────────────────────────────────────────
+.quickBarWrap {
+  padding: 0 $sp-8 $sp-2;
+  overflow: hidden;
+
+  @include respond-to(md) { padding: 0 $sp-5 $sp-2; }
+  @include respond-to(sm) { padding: 0 $sp-4 $sp-2; }
+}
+
+.quickBar {
+  display: flex;
+  gap: $sp-2;
+  overflow-x: auto;
+  padding-bottom: $sp-1;
+  @include scrollbar-thin;
+
+  // Hide scrollbar on mobile for cleaner look
+  @include respond-to(sm) {
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+.quickChip {
+  flex-shrink: 0;
+  padding: $sp-2 $sp-4;
+  background: rgba($white, 0.04);
+  border: 1px solid rgba($white, 0.09);
+  border-radius: $radius-full;
+  color: $slate-500;
+  font-size: $text-sm;
+  white-space: nowrap;
+  transition: $transition-base;
+
+  &:hover {
+    background: rgba($teal-500, 0.08);
+    border-color: rgba($teal-500, 0.25);
+    color: $teal-400;
+    transform: translateY(-1px);
+  }
+}
+
+// ── Input area ───────────────────────────────────────────────
+.inputArea {
+  padding: $sp-4 $sp-8 $sp-5;
+  flex-shrink: 0;
+
+  // Subtle top separator
+  border-top: 1px solid rgba($white, 0.05);
+
+  @include respond-to(md) {
+    padding: $sp-4 $sp-5 $sp-5;
+  }
+
+  @include respond-to(sm) {
+    padding: $sp-3 $sp-4 $sp-4;
+  }
+}

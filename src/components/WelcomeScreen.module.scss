@@ -1,0 +1,174 @@
+@use '../styles/tokens' as *;
+
+.wrap {
+  @include flex-col;
+  align-items: center;
+  justify-content: center;
+  padding: $sp-8 $sp-6;
+  gap: $sp-8;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+  height: auto;          
+  min-height: fit-content; 
+  max-height: none;   
+  display: flex;
+  flex-direction: column;
+
+  @include respond-to(sm) {
+    padding: $sp-6 $sp-4;
+    gap: $sp-6;
+  }
+}
+
+// ── Hero ────────────────────────────────────────────────────
+.hero {
+  text-align: center;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.logoGlyph {
+  width: 60px; height: 60px;
+  border-radius: $radius-xl;
+  background: $teal-700;
+  @include flex-center;
+  color: $white;
+  margin: 0 auto $sp-5;
+  box-shadow: $shadow-teal;
+}
+
+.heroTitle {
+  font-family: $font-display;
+  font-size: clamp($text-xl, 3vw, $text-3xl);
+  color: $white;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: $sp-4;
+  font-weight: 400;
+
+  em { color: $teal-400; font-style: italic; }
+}
+
+.heroSub {
+  font-size: $text-md;
+  color: $slate-500;
+  max-width: 440px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+// ── Quick Questions ─────────────────────────────────────────
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $sp-3;
+  width: 100%;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(xs) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.quickCard {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-3;
+  padding: $sp-4;
+  background: $navy-700;
+  border: 1px solid rgba($white, 0.07);
+  border-radius: $radius-lg;
+  text-align: left;
+  transition: $transition-base;
+  animation: slideUp 0.4s ease both;
+
+  &:hover {
+    background: $navy-600;
+    border-color: rgba($teal-500, 0.3);
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &:active { transform: translateY(0); }
+}
+
+.quickEmoji {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.quickText {
+  font-size: $text-sm;
+  color: $slate-400;
+  line-height: 1.5;
+  transition: $transition-fast;
+
+  .quickCard:hover & { color: $slate-200; }
+}
+
+// ── Features ────────────────────────────────────────────────
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $sp-4;
+  width: 100%;
+
+  @include respond-to(sm) {
+    grid-template-columns: 1fr;
+    gap: $sp-3;
+  }
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-3;
+  padding: $sp-3 $sp-4;
+  background: rgba($white, 0.03);
+  border-radius: $radius-md;
+  border: 1px solid rgba($white, 0.05);
+  animation: fadeIn 0.5s ease both;
+}
+
+.featureIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.featureTitle {
+  font-size: $text-sm;
+  font-weight: 600;
+  color: $slate-300;
+  margin-bottom: 2px;
+}
+
+.featureDesc {
+  font-size: $text-xs;
+  color: $slate-600;
+  line-height: 1.5;
+}
+
+// ── Disclaimer ──────────────────────────────────────────────
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-2;
+  padding: $sp-3 $sp-4;
+  background: rgba($warning, 0.06);
+  border: 1px solid rgba($warning, 0.15);
+  border-radius: $radius-md;
+  font-size: $text-xs;
+  color: rgba($warning, 0.7);
+  line-height: 1.5;
+  max-width: 600px;
+  text-align: left;
+  width: 100%;
+
+  svg { flex-shrink: 0; margin-top: 1px; }
+}

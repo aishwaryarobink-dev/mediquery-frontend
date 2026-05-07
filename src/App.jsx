@@ -1,174 +1,130 @@
-import { useState, useEffect, useRef } from 'react'
-import './styles/App.scss'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import Sidebar         from './components/Sidebar.jsx'
+import Topbar          from './components/Topbar.jsx'
+import MessageBubble   from './components/MessageBubble.jsx'
+import ChatInput       from './components/ChatInput.jsx'
+import WelcomeScreen   from './components/WelcomeScreen.jsx'
+import DisclaimerBar   from './components/DisclaimerBar.jsx'
+import TypingIndicator from './components/TypingIndicator.jsx'
+import { useChat }     from './hooks/useChat.js'
+import styles          from './App.module.scss'
 
-import Sidebar from './components/Sidebar'
-import Topbar from './components/Topbar'
-import Welcome from './components/Welcome'
-import ChatInput from './components/ChatInput'
+export default function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const messagesEndRef = useRef(null)
+  const messagesAreaRef = useRef(null)
 
-function App() {
-  const [messages, setMessages] = useState([])
-  const [loading, setLoading] = useState(false)
-  const API_URL = 'https://mediquery-backend-wb9o.onrender.com/api/chat'
-  const messagesRef = useRef([])
-const chatRef = useRef(null)
+  const {
+    messages, input, setInput,
+    isStreaming, sendMessage, stopStreaming, clearMessages,
+  } = useChat()
+
+  // Auto-scroll to bottom on new content
+  const scrollToBottom = useCallback((smooth = true) => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: smooth ? 'smooth' : 'instant',
+      block: 'end',
+    })
+  }, [])
 
   useEffect(() => {
-    messagesRef.current = messages
-  }, [messages])
+    scrollToBottom()
+  }, [messages, scrollToBottom])
 
-  const sendMessage = async (text) => {
-    if (!text.trim()) return
+  const handleSend = useCallback((text) => {
+    sendMessage(text)
+    setSidebarOpen(false)
+  }, [sendMessage])
 
-    const userMessage = { role: 'user', content: text }
+  const handleSuggest = useCallback((question) => {
+    setInput(question)
+    setSidebarOpen(false)
+  }, [setInput])
 
-    // Get complete conversation history (only messages with content)
-    const conversationHistory = messagesRef.current.filter(
-      (m) => m.content && m.content.trim() !== ''
-    )
-    const messagesToSend = [...conversationHistory, userMessage]
+  // Show typing indicator only when first AI message chunk hasn't arrived yet
+  const lastMsg = messages[messages.length - 1]
+  const showTyping = isStreaming && lastMsg?.role === 'assistant' && lastMsg?.content === ''
 
-    // Add user message and empty assistant placeholder to UI
-    setMessages((prev) => [
-      ...prev,
-      userMessage,
-      { role: 'assistant', content: '' },
-    ])
-    setLoading(true)
-
-    await handleStreamResponse(messagesToSend)
-  }
-  const handleStreamResponse = async (conversationMessages) => {
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: conversationMessages,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`)
-      }
-
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-
-      let botText = ''
-      let buffer = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        buffer += decoder.decode(value, { stream: true })
-
-        // Split complete SSE messages
-        const parts = buffer.split('\n\n')
-
-        // Keep last incomplete part in buffer
-        buffer = parts.pop()
-
-        for (let part of parts) {
-          if (part.startsWith('data: ')) {
-            const data = part.replace('data: ', '').trim()
-
-            if (data === '[DONE]') {
-              setLoading(false)
-              return
-            }
-
-            try {
-              const parsed = JSON.parse(data)
-
-              if (parsed.text) {
-  for (let char of parsed.text) {
-  botText += char
-
-  await new Promise((res) => setTimeout(res, 15)) 
-
-  setMessages((prev) => {
-    const updated = [...prev]
-    updated[updated.length - 1] = {
-      role: 'assistant',
-      content: botText,
-    }
-    return updated
-  })
-}
-}
-            } catch (e) {
-              console.error('Parse error:', e, data)
-            }
-          }
-        }
-      }
-
-      setLoading(false)
-    } catch (err) {
-      console.error('Chat error:', err)
-
-      setMessages((prev) => {
-        const updated = [...prev]
-        updated[updated.length - 1] = {
-          role: 'assistant',
-          content: `Error: ${err.message}`,
-        }
-        return updated
-      })
-
-      setLoading(false)
-    }
-  }
+  // Close sidebar on Escape
   useEffect(() => {
-  if (chatRef.current) {
-    chatRef.current.scrollTop = chatRef.current.scrollHeight
-  }
-}, [messages])
+    const handler = (e) => { if (e.key === 'Escape') setSidebarOpen(false) }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   return (
-    <div className="app">
-      <Sidebar />
+    <div className={styles.root}>
+      {/* ── Sidebar ─────────────────────────────────────────── */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        messages={messages}
+        onClear={clearMessages}
+        onSuggest={handleSuggest}
+      />
 
-      <main className="main">
-        <Topbar />
+      {/* ── Main area ────────────────────────────────────────── */}
+      <main className={styles.main}>
+        {/* Topbar */}
+        <Topbar
+          onMenuOpen={() => setSidebarOpen(true)}
+          onClear={clearMessages}
+          hasMessages={messages.length > 0}
+        />
 
-        {messages.length === 0 ? (
-          <Welcome onSelect={sendMessage} />
-        ) : (
-          <div className="chatArea" ref={chatRef}>
-            {messages.map((msg, index) => { 
-              if(msg.role ===  'assistant' && !msg.content.trim()) return null; // Skip empty assistant messages
-              return (
-                <div key={index} className={`message ${msg.role}`}>
-                  <div className="bubble">
-                    {msg.content}
-                    {msg.role === 'assistant' &&
- msg.content &&
- loading &&
- index === messages.length - 1 && (
-  <span className={`cursor ${loading ? '' : 'blink'}`}></span>
-)}
-                  </div>
-              </div>
-            )})} 
+        {/* Disclaimer strip */}
+        {messages.length > 0 && <DisclaimerBar />}
 
-            {loading && messages[messages.length - 1]?.content === '' &&
-              (
-                <div className="message assistant">
-                  <div className="bubble typing-text">
-                    Thinking...
-                  </div>
-</div>
-              )}
+        {/* Messages or Welcome */}
+        <div className={styles.messagesArea} ref={messagesAreaRef}>
+          {messages.length === 0 ? (
+            <WelcomeScreen onSuggest={handleSuggest} />
+          ) : (
+            <div className={styles.messagesList}>
+              {messages.map((msg) => {
+                if (msg.role === 'assistant' && msg.content === '' && msg.streaming) {
+      return null;}
+     return <MessageBubble key={msg.id} message={msg} />
+})}
+              {showTyping && <TypingIndicator />}
+              <div ref={messagesEndRef} className={styles.anchor} />
+            </div>
+          )}
+        </div>
+
+        {/* Suggested quick chips when no messages */}
+        {messages.length === 0 && (
+          <div className={styles.quickBarWrap}>
+            <div className={styles.quickBar}>
+              {[
+                'Type 2 diabetes symptoms?',
+                'Lower blood pressure naturally?',
+                'Cold vs flu differences?',
+                'Vitamin D deficiency signs?',
+              ].map((q, i) => (
+                <button
+                  key={i}
+                  className={styles.quickChip}
+                  onClick={() => handleSuggest(q)}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
-        <ChatInput onSend={sendMessage} />
+        {/* Input area */}
+        <div className={styles.inputArea}>
+          <ChatInput
+            value={input}
+            onChange={setInput}
+            onSend={handleSend}
+            onStop={stopStreaming}
+            isStreaming={isStreaming}
+          />
+        </div>
       </main>
     </div>
   )
 }
-
-export default App

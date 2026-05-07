@@ -1,0 +1,304 @@
+@use '../styles/tokens' as *;
+
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 280px;
+  height: 100dvh;
+  background: $navy-800;
+  border-right: 1px solid rgba($white, 0.07);
+  @include flex-col;
+  z-index: 100;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @include respond-to(lg) {
+    transform: translateX(-100%);
+    box-shadow: $shadow-lg;
+
+    &.open { transform: translateX(0); }
+  }
+}
+
+.overlay {
+  display: none;
+  @include respond-to(lg) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba($navy-900, 0.7);
+    backdrop-filter: blur(2px);
+    z-index: 99;
+  }
+}
+
+// ── Logo ────────────────────────────────────────────────────
+.logo {
+  @include flex-between;
+  padding: $sp-5 $sp-5 $sp-4;
+  border-bottom: 1px solid rgba($white, 0.06);
+  flex-shrink: 0;
+}
+
+.logoMark {
+  width: 36px; height: 36px;
+  border-radius: $radius-md;
+  background: $teal-700;
+  @include flex-center;
+  color: $white;
+  flex-shrink: 0;
+}
+
+.logoText {
+  flex: 1;
+  margin-left: $sp-3;
+  @include flex-col;
+  gap: 1px;
+}
+
+.logoName {
+  font-family: $font-display;
+  font-size: $text-lg;
+  color: $white;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.logoTag {
+  font-size: $text-xs;
+  color: $slate-500;
+  font-weight: 400;
+}
+
+.closeBtn {
+  display: none;
+  width: 28px; height: 28px;
+  border-radius: $radius-sm;
+  @include flex-center;
+  color: $slate-500;
+  transition: $transition-fast;
+
+  &:hover { background: rgba($white, 0.07); color: $white; }
+
+  @include respond-to(lg) { display: flex; }
+}
+
+// ── New Chat ────────────────────────────────────────────────
+.newChatWrap {
+  padding: $sp-4 $sp-4 $sp-2;
+  flex-shrink: 0;
+}
+
+.newChatBtn {
+  width: 100%;
+  @include flex-center;
+  gap: $sp-2;
+  padding: $sp-3 $sp-4;
+  background: rgba($teal-500, 0.12);
+  border: 1px solid rgba($teal-500, 0.25);
+  border-radius: $radius-md;
+  color: $teal-400;
+  font-size: $text-sm;
+  font-weight: 500;
+  transition: $transition-base;
+
+  &:hover {
+    background: rgba($teal-500, 0.2);
+    border-color: rgba($teal-500, 0.4);
+    color: $teal-300;
+  }
+}
+
+.newChatPlus {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+// ── Navigation ──────────────────────────────────────────────
+.nav {
+  @include flex-col;
+  gap: $sp-1;
+  padding: $sp-2 $sp-3;
+  flex-shrink: 0;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: $sp-3;
+  padding: $sp-2 + 2px $sp-3;
+  border-radius: $radius-md;
+  color: $slate-500;
+  font-size: $text-sm;
+  transition: $transition-fast;
+
+  &:hover {
+    background: rgba($white, 0.05);
+    color: $slate-300;
+  }
+
+  &.active {
+    background: rgba($teal-500, 0.1);
+    color: $teal-400;
+
+    .navIcon { color: $teal-400; }
+  }
+}
+
+.navIcon { @include flex-center; flex-shrink: 0; }
+.navLabel { flex: 1; }
+
+// ── Divider ─────────────────────────────────────────────────
+.divider {
+  height: 1px;
+  background: rgba($white, 0.06);
+  margin: $sp-2 $sp-4;
+  flex-shrink: 0;
+}
+
+// ── Content Area ────────────────────────────────────────────
+.content {
+  flex: 1;
+  overflow-y: auto;
+  @include scrollbar-thin;
+}
+
+.section {
+  padding: $sp-4 $sp-4 $sp-2;
+}
+
+.sectionLabel {
+  font-size: $text-xs;
+  font-weight: 600;
+  color: $slate-600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: $sp-3;
+}
+
+// ── Suggested ───────────────────────────────────────────────
+.suggestedList {
+  @include flex-col;
+  gap: $sp-1;
+}
+
+.suggestedItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-2;
+  padding: $sp-2 $sp-2;
+  border-radius: $radius-sm;
+  color: $slate-400;
+  font-size: $text-sm;
+  text-align: left;
+  line-height: 1.4;
+  transition: $transition-fast;
+
+  &:hover {
+    background: rgba($white, 0.05);
+    color: $slate-200;
+  }
+}
+
+.suggestedArrow {
+  color: $teal-600;
+  font-size: 1rem;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+// ── History ─────────────────────────────────────────────────
+.historyList { @include flex-col; gap: $sp-1; }
+
+.historyItem {
+  display: flex;
+  align-items: flex-start;
+  gap: $sp-2;
+  padding: $sp-2;
+  border-radius: $radius-sm;
+  color: $slate-500;
+  font-size: $text-sm;
+  text-align: left;
+  line-height: 1.4;
+  transition: $transition-fast;
+
+  svg { flex-shrink: 0; margin-top: 2px; color: $slate-600; }
+
+  span { @include text-truncate; }
+
+  &:hover { background: rgba($white, 0.05); color: $slate-300; }
+}
+
+.emptyText {
+  font-size: $text-sm;
+  color: $slate-600;
+  font-style: italic;
+}
+
+// ── Topics ──────────────────────────────────────────────────
+.topicsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $sp-2;
+}
+
+.topicChip {
+  @include flex-center;
+  flex-direction: column;
+  gap: $sp-1;
+  padding: $sp-3 $sp-2;
+  background: rgba($white, 0.04);
+  border: 1px solid rgba($white, 0.07);
+  border-radius: $radius-md;
+  color: $slate-400;
+  font-size: $text-xs;
+  font-weight: 500;
+  transition: $transition-fast;
+
+  span:first-child { font-size: 1.1rem; }
+
+  &:hover {
+    background: rgba($teal-500, 0.1);
+    border-color: rgba($teal-500, 0.2);
+    color: $teal-300;
+  }
+}
+
+// ── Settings ────────────────────────────────────────────────
+.settingsItem {
+  @include flex-between;
+  padding: $sp-3 0;
+  border-bottom: 1px solid rgba($white, 0.06);
+  font-size: $text-sm;
+  color: $slate-400;
+}
+
+.settingsSelect {
+  background: rgba($white, 0.06);
+  border: 1px solid rgba($white, 0.1);
+  border-radius: $radius-sm;
+  color: $slate-300;
+  font-size: $text-xs;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+// ── Footer ──────────────────────────────────────────────────
+.footer {
+  padding: $sp-4;
+  border-top: 1px solid rgba($white, 0.06);
+  flex-shrink: 0;
+}
+
+.footerBadge {
+  display: flex;
+  align-items: center;
+  gap: $sp-2;
+  color: $slate-600;
+  font-size: $text-xs;
+  margin-bottom: $sp-2;
+}
+
+.footerVersion {
+  font-size: 10px;
+  color: $slate-700;
+}
